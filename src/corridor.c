@@ -10,8 +10,8 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-#include "includes/corridor.h"
-#include "includes/corridorDrawing.h"
+#include "../includes/corridor.h"
+#include "../includes/corridorDrawing.h"
 
 int main(int argc, char const *argv[])
 {
@@ -28,8 +28,5 @@ int main(int argc, char const *argv[])
 	
     window.setActive(true);
     /* code */
-    while(true){
-
-    }
     return 0;
 }

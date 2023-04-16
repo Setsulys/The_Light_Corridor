@@ -1,4 +1,3 @@
-#include "gldrawing.h"
 #include "corridor.h"
 
 #include <stdio.h>
@@ -30,4 +29,55 @@ void glDrawObject() {
 	glDrawArrays(GL_POINTS,0,vertex_number);
 	glDisableClientState(GL_NORMAL_ARRAY);
 	glDisableClientState(GL_VERTEX_ARRAY);
+}
+
+void drawWall(int width, int height){
+    glBegin(GL_POLYGON);
+
+    glVertex3f(0., 0., 0.);
+    glVertex3f(0., width, 0.);
+    glVertex3f(height / 4, width, 0.);
+    glVertex3f(height / 4, 0., 0.);
+
+    glEnd();
+}
+
+void drawRacket(){
+    glBegin(GL_LINE_LOOP);
+
+    glVertex3f(0., 0., 0.);
+    glVertex3f(0., 1., 0.);
+    glVertex3f(1., 1., 0.);
+    glVertex3f(1., 0., 0.);
+
+    glEnd();
+}
+
+void drawStep(){
+	glPushMatrix();
+	glRotatef(90, 0, 1, 0);
+	glTranslatef(-(width / 2), 0, 0);
+	drawWall(width, height);
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(90, 0, 1, 0);
+	glTranslatef(width / 2, 0, 0);
+	drawWall(width, height);
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(90, 0, 0, 1);
+	glRotatef(90, 1, 0, 0);
+	glTranslatef(width / 2, 0, 0);
+	drawWall(width, height);
+	glPopMatrix();
+
+	glPushMatrix();
+	glRotatef(90, 0, 0, 1);
+	glRotatef(90, 1, 0, 0);
+	glTranslatef(width / 2, 0, 0);
+	glTranslatef(0, height, 0);
+	drawWall(width, height);
+	glPopMatrix();
 }

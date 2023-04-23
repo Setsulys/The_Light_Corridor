@@ -11,7 +11,7 @@ LIBDIR = -Llib/
 # Compilateur
 GCC = g++
 # $(OBJECTS) sont les objets qui seront générés après la compilation
-OBJECTS =  obj/corridor.o obj/corridorDrawing.o
+OBJECTS =  obj/corridor.o obj/corridorDrawing.o obj/create_obj_pt
 
 default: $(BIN)
 		bin/./corridor.exe
@@ -30,6 +30,10 @@ obj/corridor.o: src/corridor.c includes/corridor.h
 	$(GCC) $(INC) $(FLAGS) -c $< -o $@
 
 obj/corridorDrawing.o : src/corridorDrawing.c includes/corridorDrawing.h
+	@echo "**** $@ ****"
+	$(GCC) $(INC) $(FLAGS) -c $< -o $@
+
+obj/create_obj_pt.o : src/create_obj_pt.c includes/create_obj_pt.h
 	@echo "**** $@ ****"
 	$(GCC) $(INC) $(FLAGS) -c $< -o $@
 

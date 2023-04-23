@@ -1,3 +1,7 @@
+#ifndef __CORRIDOR__DRAWING_CM_H
+#define __CORRIDOR__DRAWING_CM_H
+
+
 #include <stdlib.h>
 #include <math.h>
 #include <stdio.h>
@@ -15,3 +19,5 @@ void drawWall(/*int width, int height*/);
 void drawRacket();
 
 void drawStep(int width,int height);
+
+#endif

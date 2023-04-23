@@ -10,8 +10,8 @@
 #include <GL/glu.h>
 #include <GL/gl.h>
 
-void drawWall(int width, int height);
+void drawWall(/*int width, int height*/);
 
 void drawRacket();
 
-void drawStep();
+void drawStep(int width,int height);

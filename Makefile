@@ -5,17 +5,21 @@ FLAGS = -Wall -O3
 # INCLUDES
 INC = -I./ -Iinclude/
 # INCLUDES
-LIBS = -lopengl32 -lsfml-system -lsfml-graphics -lsfml-window -lglu32
+LIBS = -lopengl32 -lsfml-system -lsfml-graphics -lsfml-window -lglu32 -lglew32 -lglfw3
 # INCLUDES
 LIBDIR = -Llib/ 
 # Compilateur
 GCC = g++
 # $(OBJECTS) sont les objets qui seront générés après la compilation
-OBJECTS =  obj/corridor.o #gldrawing.o create_obj_pt.o
+OBJECTS =  obj/corridor.o obj/corridorDrawing.o
 
 default: $(BIN)
+		bin/./corridor.exe
 
-all: $(OBJECT)
+all: 
+	$(OBJECT) 
+	bin/./corridor.exe
+	
 
 $(BIN): $(OBJECTS)
 	@echo "**** PHASE DE LIEN ****"
@@ -25,13 +29,9 @@ obj/corridor.o: src/corridor.c includes/corridor.h
 	@echo "**** $@ ****"
 	$(GCC) $(INC) $(FLAGS) -c $< -o $@
 
-#gldrawing.o: gldrawing.c gldrawing.h
-#	@echo "**** $@ ****"
-#	$(GCC) $(INC) $(FLAGS) -c $< -o $@
-
-#create_obj_pt.o: create_obj_pt.c create_obj_pt.h
-#	@echo "**** $@ ****"
-#	$(GCC) $(INC) $(FLAGS) -c $< -o $@
+obj/corridorDrawing.o : src/corridorDrawing.c includes/corridorDrawing.h
+	@echo "**** $@ ****"
+	$(GCC) $(INC) $(FLAGS) -c $< -o $@
 
 clean:
 	rm -f *.o $(BIN)

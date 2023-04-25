@@ -1,45 +1,36 @@
-#include <stdlib.h>
-#include <math.h>
-#include <stdio.h>
-
-#include <SFML/Window.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/OpenGL.hpp>
-
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
-#include <GL/glu.h>
 #include <GL/gl.h>
+#include <GL/glu.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
 
-#include "../includes/corridor.h"
+#include <stdbool.h>
+#include <time.h>
+
+#include "../includes/3D_tools.h"
+#include "../includes/draw_scene.h"
 #include "../includes/corridorDrawing.h"
-#include "../includes/create_obj_pt.h"
-
-/* variables globales pour la gestion de la caméra */
-float profondeur = 3;
-float latitude = 0.0;
-float longitude = M_PI/2.;
-
-float obj_rot = 0.0;
-unsigned int size_pt = 5;
-int flag_anim = 0;
-int flag_run = 1;
-
+#include "../includes/level.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1000;
 static const unsigned int WINDOW_HEIGHT = 1000;
-static const char WINDOW_TITLE[] = "The light corridor";
+static const char WINDOW_TITLE[] = "Light corridor";
 static float aspectRatio = 1.0;
 
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 
-/* Virtual windows space */
-// Space is defined in interval -10 and 10 on x and y axes
-static const float GL_VIEW_SIZE = 10.;
+/* IHM flag */
+static int flag_animate_rot_scale = 0;
+static int flag_animate_rot_arm = 0;
 
 
+float alpha =0;
+
+/* Error handling function */
 void onError(int error, const char* description)
 {
 	fprintf(stderr, "GLFW Error: %s\n", description);
@@ -52,21 +43,8 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	if( aspectRatio > 1)
-	{
-		gluOrtho2D(
-		-GL_VIEW_SIZE / 2. * aspectRatio, GL_VIEW_SIZE / 2. * aspectRatio,
-		-GL_VIEW_SIZE / 2., GL_VIEW_SIZE / 2.);
-	}
-	else
-	{
-		gluOrtho2D(
-		-GL_VIEW_SIZE / 2., GL_VIEW_SIZE / 2.,
-		-GL_VIEW_SIZE / 2. / aspectRatio, GL_VIEW_SIZE / 2. / aspectRatio);
-	}
+	gluPerspective(60.0,aspectRatio,Z_NEAR,Z_FAR);
 	glMatrixMode(GL_MODELVIEW);
-
 }
 
 void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -75,7 +53,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 		switch(key) {
 			case GLFW_KEY_A :
 			case GLFW_KEY_ESCAPE :
-				glfwSetWindowShouldClose(window, GLFW_TRUE); 
+				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
 			case GLFW_KEY_L :
 				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
@@ -83,13 +61,54 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_P :
 				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 				break;
-			default: fprintf(stdout,"Touche non gérée\n");
+			case GLFW_KEY_R :
+				flag_animate_rot_arm = 1-flag_animate_rot_arm;
+				break;
+			case GLFW_KEY_T :
+				flag_animate_rot_scale = 1-flag_animate_rot_scale;
+				break;
+			case GLFW_KEY_KP_9 :
+				if(dist_zoom<100.0f) dist_zoom*=1.1;
+				printf("Zoom is %f\n",dist_zoom);
+				break;
+			case GLFW_KEY_KP_3 :
+				if(dist_zoom>1.0f) dist_zoom*=0.9;
+				printf("Zoom is %f\n",dist_zoom);
+				break;
+			case GLFW_KEY_UP :
+				if (phy>2) phy -= 2;
+				printf("Phy %f\n",phy);
+				break;
+			case GLFW_KEY_DOWN :
+				if (phy<=88.) phy += 2;
+				printf("Phy %f\n",phy);
+				break;
+			case GLFW_KEY_LEFT :
+				theta -= 5;
+				break;
+			case GLFW_KEY_RIGHT :
+				theta += 5;
+				break;
+			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
 	}
 }
 
-int main(int argc, char** argv) 
+void drawSphereOn(float radius){
+	alpha = 0;
+	float x = radius * cos(alpha);
+	float y = radius * sin(alpha);
+	glPushMatrix();
+	glTranslatef(x,y,5);
+	glColor3f(0.5,0.5,0.5);
+	gluSphere(gluNewQuadric(),radius,NB_SEG_CIRCLE,NB_SEG_CIRCLE);
+	glPopMatrix();
+}
+
+
+int main(int argc, char** argv)
 {
+	srand(time(NULL));
 	/* GLFW initialisation */
 	GLFWwindow* window;
 	if (!glfwInit()) return -1;
@@ -114,7 +133,8 @@ int main(int argc, char** argv)
 
 	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 
-	glPointSize(4.0);
+	glPointSize(5.0);
+	glEnable(GL_DEPTH_TEST);
 
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -124,16 +144,31 @@ int main(int argc, char** argv)
 
 		/* Cleaning buffers and setting Matrix Mode */
 		glClearColor(0.2,0.0,0.0,0.0);
-		glClear(GL_COLOR_BUFFER_BIT);
 
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		drawFrame();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-
-
-		/* RENDER HERE */
+		setCamera();
+		drawSphereOn(1);
+		/* Initial scenery setup */
+		glPushMatrix();
+		glTranslatef(0.0,0.0,-0.01);
+		glScalef(10.0,10.0,1.0);
+		glColor3f(0.0,0.0,0.1);
+		//drawSquare();
+		glBegin(GL_POINTS);
+			glColor3f(1.0,1.0,0.0);
+			glVertex3f(0.0,0.0,0.0);
+		glEnd();
+		glPopMatrix();
+		//drawWall(WINDOW_HEIGHT,WINDOW_WIDTH);
+		//drawStep(WINDOW_HEIGHT/100,WINDOW_WIDTH/100);
+		
+		drawCorridor(10);
 		drawRacket();
-		//drawWall(/*WINDOW_WIDTH,WINDOW_HEIGHT*/);
-		drawStep(-(GL_VIEW_SIZE / 2),-(GL_VIEW_SIZE / 2));
+		//drawObstacle();
+		/* Scene rendering */
 
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
@@ -144,155 +179,15 @@ int main(int argc, char** argv)
 		/* Elapsed time computation from loop begining */
 		double elapsedTime = glfwGetTime() - startTime;
 		/* If to few time is spend vs our wanted FPS, we wait */
-		if(elapsedTime < FRAMERATE_IN_SECONDS) 
+		if(elapsedTime < FRAMERATE_IN_SECONDS)
 		{
 			glfwWaitEventsTimeout(FRAMERATE_IN_SECONDS-elapsedTime);
 		}
+
+		/* Animate scenery */
 	}
 
 	glfwTerminate();
 	return 0;
 }
-
-/*********************************************************/
-/* fonction de changement de dimension de la fenetre     */
-/* paramètres :                                          */
-/* - width : largeur (x) de la zone de visualisation     */
-/* - height : hauteur (y) de la zone de visualisation    */
-static void reshapeFunc(int width,int height) {
-	GLfloat  h = (GLfloat) width / (GLfloat) height ;
-	
-	/* dimension de l'écran GL */
-	glViewport(0, 0, (GLint)width, (GLint)height);
-	/* construction de la matrice de projection */
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	/* définition de la camera */
-	gluPerspective( 60.0, h, 0.01, 10.0 );			// Angle de vue, rapport largeur/hauteur, near, far
-
-	/* Retour a la pile de matrice Modelview
-			et effacement de celle-ci */
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-}
-
-/*********************************************************/
-/* fonction associée aux interruptions clavier           */
-/* paramètres :                                          */
-/* - kEvt : evenement clavier                            */
-static void kbdFunc(sf::Event kEvt) {
-	switch(kEvt.key.code) {
-		/* sortie du programme si utilisation de la touches ESC */
-		case sf::Keyboard::Escape :
-			flag_run = 0;
-			break;
-		case sf::Keyboard::F : glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-			break;
-		case sf::Keyboard::P : glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-			break;
-		// case sf::Keyboard::S : 
-		// 	flag_anim = 1-flag_anim;
-		// 	break;
-		// case sf::Keyboard::Up :
-		// 	if (latitude>STEP_ANGLE) latitude -= STEP_ANGLE;
-		// 	break;
-		// case sf::Keyboard::Down :
-		// 	if(latitude<M_PI-STEP_ANGLE) latitude += STEP_ANGLE;
-		// 	break;
-		// case sf::Keyboard::Left :
-		// 	longitude -= STEP_ANGLE;
-		// 	break;
-		// case sf::Keyboard::Right :
-		// 	longitude += STEP_ANGLE;
-		// 	break;
-		// case sf::Keyboard::PageUp :
-		// case sf::Keyboard::Numpad9 :
-		// 	profondeur += STEP_PROF;
-		// 	break;
-		// case sf::Keyboard::PageDown :
-		// case sf::Keyboard::Numpad3 :
-		// 	if (profondeur>0.1+STEP_PROF) profondeur -= STEP_PROF;
-		// 	break;
-		default:
-			printf("Key %d \n",kEvt.key.code);
-			break;
-	}
-}
-
-void init() {
-	profondeur = 3;
-	latitude = M_PI/2.0;
-	longitude = 0.0;
-
-	obj_rot = 0.0;
-	size_pt = 5;
-	flag_anim = 0;
-	flag_run = 1;
-
-	/* INITIALISATION DES PARAMETRES GL */
-	/* couleur du fond (gris sombre) */
-	glClearColor(0.3,0.3,0.3,0.0);
-	/* activation du ZBuffer */
-	glEnable( GL_DEPTH_TEST);
-
-	/* lissage des couleurs sur les facettes */
-	glShadeModel(GL_SMOOTH);
-
-	/* INITIALISATION DE LA SCENE */
-	createCoordinates(&size_pt);
-}
-
-// int main() {
-// 	sf::ContextSettings settings;
-// 	settings.depthBits = 24;
-// 	settings.stencilBits = 8;
-// 	settings.antialiasingLevel = 4;
-// 	settings.majorVersion = 3;
-// 	settings.minorVersion = 0;
-
-// 	sf::Window window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "OpenGL", sf::Style::Default, settings);
-	
-// 	window.setVerticalSyncEnabled(true); // call it once, after creating the window
-	
-//     window.setActive(true);
-
-// 	init();
-// 	reshapeFunc(800,800);
-
-//     while (flag_run)
-//     {
-//         // handle events
-//         sf::Event event;
-//         while (window.pollEvent(event))
-//         {
-//             if (event.type == sf::Event::Closed)
-//             {
-//                 // end the program
-//                 flag_run = 0;
-//             }
-//             else if (event.type == sf::Event::Resized)
-//             {
-//             	// adjust the viewport when the window is resized
-// 				reshapeFunc(event.size.width,event.size.height);
-//             }
-// 			else if (event.type == sf::Event::KeyPressed) 
-// 			{
-// 				kbdFunc(event);
-// 			}
-//         }
-
-// 		// // If animation is running update scene
-// 		// if (flag_anim) {
-// 		// 	obj_rot+=STEP_ANGLE;
-// 		// }
-//         // draw...
-// 		drawStep(-(GL_VIEW_SIZE / 2),-(GL_VIEW_SIZE / 2));
-
-//         // end the current frame (internally swaps the front and back buffers)
-//         window.display();
-//     }
-
-
-
-// 	return 0;
-// }
+//** */

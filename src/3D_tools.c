@@ -4,9 +4,10 @@
 float theta = 0.0f; // Angle between x axis and viewpoint
 float phy = 70.0f; // Angle between z axis and viewpoint
 float dist_zoom = 15.0f; // Distance between origin and viewpoint
+float posCamera = 1.0;
 
 void setCamera() {
-	gluLookAt(dist_zoom*cos(toRad(theta))*sin(toRad(phy)),
+	gluLookAt(dist_zoom*cos(toRad(theta))*sin(toRad(phy)) - posCamera,
 			  dist_zoom*sin(toRad(theta))*sin(toRad(phy)),
 			  dist_zoom*cos(toRad(phy)),
 			  0.0,0.0,5.0,

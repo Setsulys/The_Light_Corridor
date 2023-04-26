@@ -15,7 +15,7 @@ static const float Z_FAR = 100.f;
 extern float theta;      // Angle between x axis and viewpoint
 extern float phy  ;      // Angle between z axis and viewpoint
 extern float dist_zoom ; // Distance between origin and viewpoint
-
+extern float posCamera;
 void setCamera();
 
 /* Draw cannonic objet functions */

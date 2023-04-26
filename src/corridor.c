@@ -100,7 +100,6 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				if(vertical < (WINDOW_HEIGHT/200)-1){
 					vertical += 0.5;
 				}
-				
 				break;
 			case GLFW_KEY_KP_4 :
 				if(horizontal > -4){
@@ -116,7 +115,14 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				if(horizontal < (WINDOW_WIDTH/200)-1  ){
 					horizontal += 0.5;
 				}
-				
+				break;
+			case GLFW_KEY_SPACE :
+				posCamera+=10;
+				break;
+			case GLFW_KEY_LEFT_CONTROL:
+				if(posCamera >=1){
+					posCamera-=10;
+				}
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}

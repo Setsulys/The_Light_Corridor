@@ -1,5 +1,5 @@
-#ifndef __LEVEL_CM_H
-#define __LEVEL_CM_H
+#ifndef __LEVEL_H
+#define __LEVEL_H
 
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>

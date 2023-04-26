@@ -13,6 +13,8 @@
 #include "../includes/draw_scene.h"
 #include "../includes/corridorDrawing.h"
 #include "../includes/level.h"
+#include "../includes/lights.h"
+#include "../includes/objects.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1000;
@@ -23,12 +25,8 @@ static float aspectRatio = 1.0;
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 
-/* IHM flag */
-static int flag_animate_rot_scale = 0;
-static int flag_animate_rot_arm = 0;
 
 
-float alpha =0;
 
 /* Error handling function */
 void onError(int error, const char* description)
@@ -55,18 +53,18 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_ESCAPE :
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
-			case GLFW_KEY_L :
-				glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-				break;
-			case GLFW_KEY_P :
-				glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-				break;
-			case GLFW_KEY_R :
-				flag_animate_rot_arm = 1-flag_animate_rot_arm;
-				break;
-			case GLFW_KEY_T :
-				flag_animate_rot_scale = 1-flag_animate_rot_scale;
-				break;
+			// case GLFW_KEY_L :
+			// 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
+			// 	break;
+			// case GLFW_KEY_P :
+			// 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+			// 	break;
+			// case GLFW_KEY_R :
+			// 	flag_animate_rot_arm = 1-flag_animate_rot_arm;
+			// 	break;
+			// case GLFW_KEY_T :
+			// 	flag_animate_rot_scale = 1-flag_animate_rot_scale;
+			// 	break;
 			case GLFW_KEY_KP_9 :
 				if(dist_zoom<100.0f) dist_zoom*=1.1;
 				printf("Zoom is %f\n",dist_zoom);
@@ -89,20 +87,40 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_RIGHT :
 				theta += 5;
 				break;
+			//changement lumiere
+			case GLFW_KEY_P :
+				up+=0.5;
+				break;
+			case GLFW_KEY_M :
+				up-=0.5;
+				break;
+
+			//mouvement de raquette	
+			case GLFW_KEY_KP_8 :
+				if(vertical < (WINDOW_HEIGHT/200)-1){
+					vertical += 0.5;
+				}
+				
+				break;
+			case GLFW_KEY_KP_4 :
+				if(horizontal > -4){
+					horizontal -= 0.5;
+				}
+				break;
+			case GLFW_KEY_KP_5 :
+				if(vertical > -4){
+					vertical -= 0.5;
+				}
+				break;
+			case GLFW_KEY_KP_6 :
+				if(horizontal < (WINDOW_WIDTH/200)-1  ){
+					horizontal += 0.5;
+				}
+				
+				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
 	}
-}
-
-void drawSphereOn(float radius){
-	alpha = 0;
-	float x = radius * cos(alpha);
-	float y = radius * sin(alpha);
-	glPushMatrix();
-	glTranslatef(x,y,5);
-	glColor3f(0.5,0.5,0.5);
-	gluSphere(gluNewQuadric(),radius,NB_SEG_CIRCLE,NB_SEG_CIRCLE);
-	glPopMatrix();
 }
 
 
@@ -143,14 +161,15 @@ int main(int argc, char** argv)
 		double startTime = glfwGetTime();
 
 		/* Cleaning buffers and setting Matrix Mode */
-		glClearColor(0.2,0.0,0.0,0.0);
+		glClearColor(0.0,0.0,0.0,0.0);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		drawFrame();
+		//drawFrame();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		setCamera();
-		drawSphereOn(1);
+		drawRacket(10,10);
+		drawSphereOn();
 		/* Initial scenery setup */
 		glPushMatrix();
 		glTranslatef(0.0,0.0,-0.01);
@@ -161,12 +180,17 @@ int main(int argc, char** argv)
 			glColor3f(1.0,1.0,0.0);
 			glVertex3f(0.0,0.0,0.0);
 		glEnd();
+		
 		glPopMatrix();
+		drawCorridor(10,10);
 		//drawWall(WINDOW_HEIGHT,WINDOW_WIDTH);
 		//drawStep(WINDOW_HEIGHT/100,WINDOW_WIDTH/100);
+		drawSceneLight();
+
+	//glUniform3fv(glGetUniformLocation(my_shader->getGLId(),"light_world_position"),1,position);
 		
-		drawCorridor(10);
-		drawRacket();
+		
+		
 		//drawObstacle();
 		/* Scene rendering */
 

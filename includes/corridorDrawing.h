@@ -1,5 +1,5 @@
-#ifndef __CORRIDOR__DRAWING_CM_H
-#define __CORRIDOR__DRAWING_CM_H
+#ifndef __CORRIDOR__DRAWING_H
+#define __CORRIDOR__DRAWING_H
 
 
 #include <GLFW/glfw3.h>
@@ -11,10 +11,8 @@
 
 void drawWall(int width, int height);
 
-void drawRacket();
-
 void drawStep(int width,int height);
 
-void drawCorridor(int value);
+void drawCorridor(int value,int size);
 
 #endif

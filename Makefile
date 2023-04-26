@@ -11,8 +11,17 @@ LIBS = -lglfw -lGLU -lGL -lm
 LIBDIR = -Llib/ 
 # Compilateur
 GCC = g++
+
+OBJDIR = obj/
+INCDIR = includes/
+SRCDIR = src/
+
 # $(OBJECTS) sont les objets qui seront générés après la compilation
-OBJECTS =  obj/draw_scene.o obj/3D_tools.o obj/corridor.o obj/corridorDrawing.o obj/level.o
+OBJECTS =  obj/draw_scene.o obj/3D_tools.o obj/corridor.o obj/corridorDrawing.o obj/level.o obj/lights.o obj/objects.o
+
+
+
+
 
 default: $(BIN)
 	bin/./corridor.out
@@ -24,28 +33,12 @@ all:
 
 $(BIN): $(OBJECTS)
 	@echo "**** PHASE DE LIEN ****"
-	$(GCC) $(OBJECTS) $(FLAGS) -o $(BIN) $(LIBDIR) $(LIBS) 
+	$(GCC) $(OBJECTS) $(FLAGS) -o $(BIN) $(LIBDIR) $(LIBS)
 
-obj/corridor.o: src/corridor.c includes/corridor.h
-	@echo "**** $@ ****"
-	$(GCC) $(INC) $(FLAGS) -c $< -o $@
-
-obj/corridorDrawing.o : src/corridorDrawing.c includes/corridorDrawing.h
-	@echo "**** $@ ****"
-	$(GCC) $(INC) $(FLAGS) -c $< -o $@
-	
-obj/3D_tools.o : src/3D_tools.c includes/3D_tools.h
-	@echo "**** $@ ****"
-	$(GCC) $(INC) $(FLAGS) -c $< -o $@
-
-obj/draw_scene.o : src/draw_scene.c includes/draw_scene.h
-	@echo "**** $@ ****"
-	$(GCC) $(INC) $(FLAGS) -c $< -o $@
-
-obj/level.o : src/level.c includes/level.h
+$(OBJDIR)%.o: $(SRCDIR)%.c $(INCDIR)*.h
 	@echo "**** $@ ****"
 	$(GCC) $(INC) $(FLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o $(BIN)
+	rm -f obj/*.o $(BIN)
 	find . -name "*~" -exec rm {} \;

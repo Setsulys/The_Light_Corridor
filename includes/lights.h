@@ -15,4 +15,5 @@ void glDrawLight(float size);
 
 void drawSceneLight();
 
+void drawSceneLightIntense();
 #endif

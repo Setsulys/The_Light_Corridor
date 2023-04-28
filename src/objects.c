@@ -1,6 +1,6 @@
 #include "../includes/objects.h"
 #include "../includes/3D_tools.h"
-
+#include "../includes/lights.h"
 float vertical = 0;
 float horizontal = 0;
 
@@ -11,7 +11,8 @@ void drawSphereOn(){
 	glPushMatrix();
 	glTranslatef(x,y,5);
 	glColor3f(0.5,0.5,0.5);
-	gluSphere(gluNewQuadric(),1,NB_SEG_CIRCLE,NB_SEG_CIRCLE);
+	//gluSphere(gluNewQuadric(),1,NB_SEG_CIRCLE,NB_SEG_CIRCLE);
+	drawSceneLightIntense();
 	glPopMatrix();
 }
 

@@ -46,7 +46,7 @@ void drawCorridor(int value,int size){
 		//int random = rand()%5;
 		glPushMatrix();
 		glTranslatef(-i * size, 0, 0);
-		drawLevel(2);
+		drawLevel(i);
 		drawStep(size, size);
 		glPopMatrix();
 		

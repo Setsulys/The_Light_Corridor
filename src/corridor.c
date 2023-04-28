@@ -15,6 +15,8 @@
 #include "../includes/level.h"
 #include "../includes/lights.h"
 #include "../includes/objects.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "../includes/stb_image.h"
 
 /* Window properties */
 static const unsigned int WINDOW_WIDTH = 1000;
@@ -160,6 +162,33 @@ int main(int argc, char** argv)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
+
+
+
+	// //Stating TExture
+	// int width, height, n;
+	// //stbi_set_flip_vertically_on_load(true);
+	// unsigned char * data = stbi_load("/home/setsuly/Documents/Synthese/project/the_light_corridor/src/silver.png",&width,&height,&n,0);
+
+	// if(!data){
+	// 	printf("error");
+	// 	return 1;
+	// }
+	// GLuint texture;
+	// glGenTextures(1,&texture);
+	// //glActiveTexture(GL_TEXTURE0);
+	// glBindTexture(GL_TEXTURE_3D,texture);
+	// glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	// glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	// glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	// glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	// glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,width,height,0,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+
+	// //stbi_image_free(data);
+	// glBindTexture(GL_TEXTURE_3D,0);
+	// glTexCoord3f(width,height,0);
+	
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -167,8 +196,9 @@ int main(int argc, char** argv)
 		double startTime = glfwGetTime();
 
 		/* Cleaning buffers and setting Matrix Mode */
-		glClearColor(0.0,0.0,0.0,0.0);
-
+		glClearColor(0.5,0.5,0.5,0.5);
+		//glClearColor(0.,0.,0.,0.);
+		//drawSceneLight(); // No ball for the light
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//drawFrame();
 		glMatrixMode(GL_MODELVIEW);
@@ -189,15 +219,8 @@ int main(int argc, char** argv)
 		
 		glPopMatrix();
 		drawCorridor(10,10);
-		//drawWall(WINDOW_HEIGHT,WINDOW_WIDTH);
-		//drawStep(WINDOW_HEIGHT/100,WINDOW_WIDTH/100);
-		drawSceneLight();
-
-	//glUniform3fv(glGetUniformLocation(my_shader->getGLId(),"light_world_position"),1,position);
-		
-		
-		
-		//drawObstacle();
+		//drawWall(10,10,texture);
+		drawSceneLight(); //ball for the light
 		/* Scene rendering */
 
 		/* Swap front and back buffers */
@@ -217,6 +240,7 @@ int main(int argc, char** argv)
 		/* Animate scenery */
 	}
 
+	//glDeleteTextures(1, &texture);
 	glfwTerminate();
 	return 0;
 }

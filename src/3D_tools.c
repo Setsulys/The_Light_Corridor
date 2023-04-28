@@ -10,7 +10,7 @@ void setCamera() {
 	gluLookAt(dist_zoom*cos(toRad(theta))*sin(toRad(phy)) - posCamera,
 			  dist_zoom*sin(toRad(theta))*sin(toRad(phy)),
 			  dist_zoom*cos(toRad(phy)),
-			  0.0,0.0,5.0,
+			  -posCamera,0.0,5.0,
 			  0.0,0.0,1.0);
 }
 

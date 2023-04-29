@@ -24,7 +24,9 @@ OBJECTS =  obj/draw_scene.o obj/3D_tools.o obj/corridor.o obj/corridorDrawing.o 
 
 
 default: $(BIN)
+	
 	bin/./corridor.out
+	rm -f obj/*.o $(BIN)
 
 all: 
 	$(OBJECT) 

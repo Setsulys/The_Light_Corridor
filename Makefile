@@ -17,7 +17,7 @@ INCDIR = includes/
 SRCDIR = src/
 
 # $(OBJECTS) sont les objets qui seront générés après la compilation
-OBJECTS =  obj/draw_scene.o obj/3D_tools.o obj/corridor.o obj/corridorDrawing.o obj/level.o obj/lights.o obj/objects.o
+OBJECTS =  obj/draw_scene.o obj/3D_tools.o obj/corridor.o obj/corridorDrawing.o obj/level.o obj/lights.o obj/objects.o #obj/textures.o
 
 
 
@@ -28,7 +28,7 @@ default: $(BIN)
 
 all: 
 	$(OBJECT) 
-	bin/./corridor.out
+	#bin/./corridor.out
 	
 
 $(BIN): $(OBJECTS)

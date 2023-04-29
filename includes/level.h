@@ -16,7 +16,7 @@ typedef struct{
 
 extern Mur obstacle[50];
 
-void drawObstacle();
+void drawObstacle(GLuint texture);
 
-void drawLevel(int rand,float size);
+void drawLevel(int rand,float size,GLuint texture);
 #endif

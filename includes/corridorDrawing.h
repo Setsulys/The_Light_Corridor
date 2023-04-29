@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <math.h>
 
-void drawWall(int width, int height);
+void drawWall(int width, int height,GLuint texture);
 
-void drawStep(int width,int height);
+void drawStep(int width,int height,GLuint texture);
 
-void drawCorridor(int value,int size);
+void drawCorridor(int value,int size,GLuint texture);
 
 #endif

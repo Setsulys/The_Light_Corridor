@@ -27,7 +27,10 @@ static float aspectRatio = 1.0;
 /* Minimal time wanted between two images */
 static const double FRAMERATE_IN_SECONDS = 1. / 30.;
 
-
+static const int size =1;
+GLuint texture[size];
+const char * path[size] = {"/home/setsuly/Documents/Synthese/project/the_light_corridor/src/silver.png"};
+	
 
 
 /* Error handling function */
@@ -182,31 +185,27 @@ int main(int argc, char** argv)
 
 
 	// // // //Stating TExture
-	// int width, height, n;
-	// //stbi_set_flip_vertically_on_load(true);
-	// unsigned char * data = stbi_load("/home/setsuly/Documents/Synthese/project/the_light_corridor/src/silver.png",&width,&height,&n,0);
+	int width, height, n;
+	//stbi_set_flip_vertically_on_load(true);
+	unsigned char * data = stbi_load("imgs/backs.png",&width,&height,&n,0);
+	if(!data){
+		printf("error picture not loaded\n");
+		return 1;
+	}
+	GLuint texture;
+	glGenTextures(1,&texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,texture);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
-	// if(!data){
-	// 	printf("error");
-	// 	return 1;
-	// }
-	// GLuint texture;
-	// glGenTextures(1,&texture);
-	// //glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_2D,texture);
-	// glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-	// glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	// glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-	// glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-	// glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
-
-	// //stbi_image_free(data);
-	// glBindTexture(GL_TEXTURE_2D,0);
-	// glTexCoord3f(width,height,0);
-
-
-
-
+	stbi_image_free(data);
+	glBindTexture(GL_TEXTURE_2D,0);
+	glTexCoord3f(width,height,0);
+	
 	int distanceObstacle=0;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
@@ -343,7 +342,7 @@ int main(int argc, char** argv)
 		glEnd();
 		
 		glPopMatrix();
-		drawCorridor(10,10);
+		drawCorridor(10,10,texture);
 		//drawWall(10,10,texture);
 		drawSceneLight(); //ball for the light
 		/* Scene rendering */
@@ -364,8 +363,8 @@ int main(int argc, char** argv)
 
 		/* Animate scenery */
 	}
-
-	//glDeleteTextures(1, &texture);
+	//freeTextures(texture,texturesDatas,size);
+	glDeleteTextures(1, &texture);
 	glfwTerminate();
 	return 0;
 }

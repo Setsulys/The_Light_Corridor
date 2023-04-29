@@ -3,14 +3,14 @@
 
 Mur obstacle[50];
 
-void drawObstacle(){
+void drawObstacle(GLuint texture){
     glColor3f(.5,0.,0.);
     glRotatef(90,0,0,1);
     glTranslatef(-5.0,0.,0.);
-    drawWall(10,10);
+    drawWall(10,10,texture);
 }
 
-void drawLevel(int rand,float size){
+void drawLevel(int rand,float size,GLuint texture){
     Mur mur;
     switch(rand%5){
         case 3 : 
@@ -20,7 +20,7 @@ void drawLevel(int rand,float size){
             mur.y = 0;
             mur.z =-6;
             obstacle[rand] = mur;
-            drawObstacle();
+            drawObstacle(texture);
             glPopMatrix();
             break;
         case 4 : 
@@ -30,7 +30,7 @@ void drawLevel(int rand,float size){
             mur.y = 0;
             mur.z =6;
             obstacle[rand] = mur;
-            drawObstacle();
+            drawObstacle(texture);
             glPopMatrix();
             break;
         case 1 : 
@@ -40,7 +40,7 @@ void drawLevel(int rand,float size){
             mur.y = -6;
             mur.z =0;
             obstacle[rand] = mur;
-            drawObstacle();
+            drawObstacle(texture);
             glPopMatrix();
             break;
         case 2 : 
@@ -50,7 +50,7 @@ void drawLevel(int rand,float size){
             mur.y = 6;
             mur.z =0;
             obstacle[rand] = mur;
-            drawObstacle();
+            drawObstacle(texture);
             glPopMatrix();
             break;
 

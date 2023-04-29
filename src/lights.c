@@ -47,7 +47,7 @@ void drawSceneLight(){
 
 void drawSceneLightIntense(){
     // LIGHT POSITION
-    float position[4] = {-30.0,0.0,0.0,up};
+    float position[4] = {0.0,0.0,0.0,up};
     /*
         * position[0] = axe camera
         * position[1] = horizontal

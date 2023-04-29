@@ -47,6 +47,17 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 	glMatrixMode(GL_MODELVIEW);
 }
 
+
+/*Ball bounce values*/
+
+float ballVertical =0;
+float ballHorizontal =0;
+float ballFront =2;
+
+int toTheLeft =0;
+int toTheFront = 0;
+int toTheDown = 0;
+
 void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS) {
@@ -90,31 +101,31 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				theta += 5;
 				break;
 			//changement lumiere
-			case GLFW_KEY_P :
-				up+=0.5;
-				break;
-			case GLFW_KEY_M :
-				up-=0.5;
-				break;
+			// case GLFW_KEY_P :
+			// 	up+=0.5;
+			// 	break;
+			// case GLFW_KEY_M :
+			// 	up-=0.5;
+			// 	break;
 
 			//mouvement de raquette	
 			case GLFW_KEY_KP_8 :
-				if(vertical < (WINDOW_HEIGHT/200)-1){
+				if(vertical < 3){
 					vertical += 0.5;
 				}
 				break;
 			case GLFW_KEY_KP_4 :
-				if(horizontal > -4){
+				if(horizontal > -3){
 					horizontal -= 0.5;
 				}
 				break;
 			case GLFW_KEY_KP_5 :
-				if(vertical > -4){
+				if(vertical > -3){
 					vertical -= 0.5;
 				}
 				break;
 			case GLFW_KEY_KP_6 :
-				if(horizontal < (WINDOW_WIDTH/200)-1  ){
+				if(horizontal < 3  ){
 					horizontal += 0.5;
 				}
 				break;
@@ -122,14 +133,19 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				posCamera+=10;
 				break;
 			case GLFW_KEY_LEFT_CONTROL:
-				if(posCamera >=1){
+				if(posCamera >=2){
 					posCamera-=10;
 				}
+				break;
+			case GLFW_KEY_ENTER : 
+				toTheFront =1;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
 	}
 }
+
+
 
 
 int main(int argc, char** argv)
@@ -188,13 +204,11 @@ int main(int argc, char** argv)
 	// glBindTexture(GL_TEXTURE_3D,0);
 	// glTexCoord3f(width,height,0);
 	
-
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Get time (in second) at loop beginning */
 		double startTime = glfwGetTime();
-
 		/* Cleaning buffers and setting Matrix Mode */
 		glClearColor(0.5,0.5,0.5,0.5);
 		//glClearColor(0.,0.,0.,0.);
@@ -205,7 +219,62 @@ int main(int argc, char** argv)
 		glLoadIdentity();
 		setCamera();
 		drawRacket(10,10);
+
+
+
+		/* Bouncing*/
+			if(toTheDown ==1){
+				ballVertical++;
+			}
+			else if(toTheDown ==2){
+				ballVertical--;
+			}
+
+			if(toTheFront == 1){
+				ballFront--;
+			}
+			else if( toTheFront == 2){
+				ballFront++;
+			}
+
+			if(toTheLeft ==1){
+				ballHorizontal++;
+			}
+			else if(toTheLeft == 2) {
+				ballHorizontal--;
+			}
+
+
+			if(ballFront==2 && toTheFront!=0){
+				toTheFront=1;
+			} 
+			if(ballHorizontal<=-4){
+				toTheLeft=1;
+			}
+			if(ballHorizontal >=4){
+				toTheLeft =2;
+			}
+			if(ballVertical<=-4){
+				toTheDown =1;
+			}
+			if(ballVertical >=4){
+				toTheDown =2;
+			}
+			if(ballFront == obstacle[1].x){
+				if(toTheFront == 1){
+					toTheFront =2;
+				}
+				else{
+					toTheFront =1;
+				}
+			}
+			//printf("%f",obstacle[1].x);
+
+
+		glPushMatrix();
+		glTranslatef(ballFront,ballVertical+horizontal,ballHorizontal+vertical);
 		drawSphereOn();
+		glPopMatrix();
 		/* Initial scenery setup */
 		glPushMatrix();
 		glTranslatef(0.0,0.0,-0.01);

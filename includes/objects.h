@@ -12,7 +12,6 @@
 extern float vertical;
 extern float horizontal;
 
-
 void drawSphereOn();
 
 void drawRacket(int width, int height);

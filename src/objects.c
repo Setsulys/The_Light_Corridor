@@ -4,6 +4,8 @@
 float vertical = 0;
 float horizontal = 0;
 
+
+
 void drawSphereOn(){
 	float alpha = 0;
 	float x =  cos(alpha);
@@ -17,13 +19,12 @@ void drawSphereOn(){
 }
 
 void drawRacket(int width, int height){
-	float w = width/4;
-	float h = height/4;
-	
+	float w = width/3;
+	float h = height/3;
 	glPushMatrix();
-	glTranslatef(0,horizontal,vertical);
+	glTranslatef(-posCamera,horizontal,vertical);
 	glLineWidth(10);
-	glTranslatef(5,-1,4);
+	glTranslatef(5,-1.5,3.5);
     glBegin(GL_LINE_LOOP);
 	glColor3f(1., 1., 1.);
     glVertex3f(0., 0., 0.);

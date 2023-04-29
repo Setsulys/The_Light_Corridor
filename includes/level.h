@@ -8,7 +8,15 @@
 #include <stdio.h>
 #include <math.h>
 
+typedef struct{
+    float x;
+    float y;
+    float z;
+} Mur;
+
+extern Mur obstacle[50];
+
 void drawObstacle();
 
-void drawLevel(int rand);
+void drawLevel(int rand,float size);
 #endif

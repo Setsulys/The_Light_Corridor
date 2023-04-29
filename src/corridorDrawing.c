@@ -1,25 +1,25 @@
 #include "../includes/corridorDrawing.h"
 #include "../includes/level.h"
-#include "../includes/textures.h"
 
 void drawWall(int width, int height,GLuint texture){
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,texture);
     glBegin(GL_POLYGON);
-	glTexCoord3f(1,1,1);
+	glTexCoord2f(1,0);
     glVertex3f(0., 0., 0.);
 
-	glTexCoord3f(1,1,1);
+	glTexCoord2f(1,0);
     glVertex3f(0., 0., height);
 
-	glTexCoord3f(1.,1.,1);
+	glTexCoord2f(1,0);
     glVertex3f(width, 0., height);
 	
-	glTexCoord3f(1,1,1);
+	glTexCoord2f(1,0);
     glVertex3f(width, 0., 0.);
     glEnd();
-	glDisable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D,0);
+	glDisable(GL_TEXTURE_2D);
+	
 }
 
 

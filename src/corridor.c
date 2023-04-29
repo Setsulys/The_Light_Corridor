@@ -217,7 +217,6 @@ int main(int argc, char** argv)
 		//glClearColor(0.,0.,0.,0.);
 		drawSceneLight(); // No ball for the light
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//drawFrame();
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		setCamera();
@@ -227,32 +226,31 @@ int main(int argc, char** argv)
 
 		/* Bouncing*/
 			if(toTheDown ==1){
-				ballVertical++;
+				ballVertical+=0.5;
 			}
 			else if(toTheDown ==2){
-				ballVertical--;
+				ballVertical-=0.5;
 			}
 
 			if(toTheFront == 1){
-				ballFront--;
+				ballFront-=0.5;
 			}
 			else if( toTheFront == 2){
-				ballFront++;
+				ballFront+=0.5;
 			}
 
 			if(toTheLeft ==1){
-				ballHorizontal++;
+				ballHorizontal+=0.5;
 			}
 			else if(toTheLeft == 2) {
-				ballHorizontal--;
+				ballHorizontal-=0.5;
 			}
 			if(toTheFront == 0){
 				ballHorizontal= vertical;
 				ballVertical= horizontal;
 			}
 
-
-			if(ballFront==2 && toTheFront!=0){
+			if(ballFront>=2 - posCamera && toTheFront!=0){
 				toTheFront=1;
 			} 
 			if(ballHorizontal<=-4){
@@ -269,12 +267,47 @@ int main(int argc, char** argv)
 			}
 
 
-
+		/*collision racket and ball*/
+			/*Out of the racket*/
+			if(ballVertical>=horizontal+3|| ballVertical<=horizontal-3 || ballHorizontal>=vertical+3 ||ballHorizontal<=vertical-3){
+				if( toTheFront!=0 && ballVertical>=horizontal+3 && ballFront >= 2 -posCamera){
+					printf("lose");
+					//return 0;
+				}
+				if( toTheFront!=0 && ballVertical<=horizontal-3 && ballFront >= 2 -posCamera){
+					printf("lose");
+					//return 0;
+				}
+				if( toTheFront!=0 && ballHorizontal>=vertical+3 && ballFront >= 2 -posCamera){
+					printf("lose");
+					//return 0;
+				}
+				if( toTheFront!=0 && ballHorizontal<=vertical-3 && ballFront >= 2 -posCamera){
+					printf("lose");
+					//return 0;
+				}
+			}
+			else{
+				if(ballFront>=2-posCamera && ballVertical>= horizontal+1){
+					toTheDown = 1;
+				}
+				if(ballFront>=2-posCamera && ballVertical<= horizontal-1){
+					toTheDown = 2;
+				}
+				if(ballFront>=2-posCamera && ballHorizontal>= vertical+1){
+					toTheLeft = 1;
+				}
+				if(ballFront>=2-posCamera && ballHorizontal<= vertical-1){
+					toTheLeft = 2;
+				}
+			}
+		/*variations bounce racket*/
+			
 		/*Collision wall and ball*/
 			if(ballFront == obstacle[distanceObstacle].x){
-				printf("mur %f",obstacle[distanceObstacle].x);
-				printf("\nobstacles\n%d et %f et %f\n",distanceObstacle,obstacle[distanceObstacle].z/2.0 ,obstacle[distanceObstacle].y/2.0);
-				printf("%f, %f\n",ballHorizontal,ballVertical);
+				// printf("mur %f",obstacle[distanceObstacle].x);
+				// printf("\nobstacles\n%d et %f et %f\n",distanceObstacle,obstacle[distanceObstacle].z/2.0 ,obstacle[distanceObstacle].y/2.0);
+				// printf("%f, %f\n",ballHorizontal,ballVertical);
 				
 				if(obstacle[distanceObstacle].z ==-20 || obstacle[distanceObstacle].y ==-20){
 					distanceObstacle++;
@@ -343,10 +376,7 @@ int main(int argc, char** argv)
 		
 		glPopMatrix();
 		drawCorridor(10,10,texture);
-		//drawWall(10,10,texture);
 		drawSceneLight(); //ball for the light
-		/* Scene rendering */
-
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 
@@ -363,7 +393,6 @@ int main(int argc, char** argv)
 
 		/* Animate scenery */
 	}
-	//freeTextures(texture,texturesDatas,size);
 	glDeleteTextures(1, &texture);
 	glfwTerminate();
 	return 0;

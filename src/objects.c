@@ -35,3 +35,15 @@ void drawRacket(int width, int height){
 	glLineWidth(1.0);
 	glPopMatrix();
 }
+
+void drawSphereLife(float value){
+	float alpha = 0;
+	float x =  cos(alpha);
+	float y =  sin(alpha);
+	glPushMatrix();
+	glTranslatef(x+7-posCamera,y-3+value/3,8);
+	glColor3f(0.5,0.5,0.5);
+	gluSphere(gluNewQuadric(),0.2,NB_SEG_CIRCLE,NB_SEG_CIRCLE);
+	//drawSceneLightIntense();
+	glPopMatrix();
+}

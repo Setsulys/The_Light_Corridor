@@ -16,4 +16,5 @@ void drawSphereOn();
 
 void drawRacket(int width, int height);
 
+void drawSphereLife(float value);
 #endif

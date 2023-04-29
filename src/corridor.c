@@ -2,10 +2,12 @@
 #include <GLFW/glfw3.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
+#include <GL/glut.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
-
+#include <string.h>
+#include <unistd.h>
 #include <stdbool.h>
 #include <time.h>
 
@@ -31,7 +33,19 @@ static const int size =1;
 GLuint texture[size];
 const char * path[size] = {"/home/setsuly/Documents/Synthese/project/the_light_corridor/src/silver.png"};
 	
+/* Menu or not*/
+	bool menu = true;
+	bool game = true;
+	bool win = false;
+/*Ball bounce values*/
 
+float ballVertical =0;
+float ballHorizontal =0;
+float ballFront =2;
+
+int toTheLeft =0;
+int toTheFront = 0;
+int toTheDown = 0;
 
 /* Error handling function */
 void onError(int error, const char* description)
@@ -51,15 +65,6 @@ void onWindowResized(GLFWwindow* window, int width, int height)
 }
 
 
-/*Ball bounce values*/
-
-float ballVertical =0;
-float ballHorizontal =0;
-float ballFront =2;
-
-int toTheLeft =0;
-int toTheFront = 0;
-int toTheDown = 0;
 
 void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -81,28 +86,28 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			// case GLFW_KEY_T :
 			// 	flag_animate_rot_scale = 1-flag_animate_rot_scale;
 			// 	break;
-			case GLFW_KEY_KP_9 :
-				if(dist_zoom<100.0f) dist_zoom*=1.1;
-				printf("Zoom is %f\n",dist_zoom);
-				break;
-			case GLFW_KEY_KP_3 :
-				if(dist_zoom>1.0f) dist_zoom*=0.9;
-				printf("Zoom is %f\n",dist_zoom);
-				break;
-			case GLFW_KEY_UP :
-				if (phy>2) phy -= 2;
-				printf("Phy %f\n",phy);
-				break;
-			case GLFW_KEY_DOWN :
-				if (phy<=88.) phy += 2;
-				printf("Phy %f\n",phy);
-				break;
-			case GLFW_KEY_LEFT :
-				theta -= 5;
-				break;
-			case GLFW_KEY_RIGHT :
-				theta += 5;
-				break;
+			// case GLFW_KEY_KP_9 :
+			// 	if(dist_zoom<100.0f) dist_zoom*=1.1;
+			// 	printf("Zoom is %f\n",dist_zoom);
+			// 	break;
+			// case GLFW_KEY_KP_3 :
+			// 	if(dist_zoom>1.0f) dist_zoom*=0.9;
+			// 	printf("Zoom is %f\n",dist_zoom);
+			// 	break;
+			// case GLFW_KEY_UP :
+			// 	if (phy>2) phy -= 2;
+			// 	printf("Phy %f\n",phy);
+			// 	break;
+			// case GLFW_KEY_DOWN :
+			// 	if (phy<=88.) phy += 2;
+			// 	printf("Phy %f\n",phy);
+			// 	break;
+			// case GLFW_KEY_LEFT :
+			// 	theta -= 5;
+			// 	break;
+			// case GLFW_KEY_RIGHT :
+			// 	theta += 5;
+			// 	break;
 			//changement lumiere
 			// case GLFW_KEY_P :
 			// 	up+=0.5;
@@ -133,21 +138,39 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				}
 				break;
 			case GLFW_KEY_SPACE :
-				posCamera+=10;
+				if(menu ==false){
+					posCamera+=10;
+				}
 				break;
 			case GLFW_KEY_LEFT_CONTROL:
-				if(posCamera >=2){
-					posCamera-=10;
+				if(menu == false){
+					if(posCamera >=2){
+						posCamera-=10;
+					}
 				}
 				break;
 			case GLFW_KEY_ENTER : 
 				toTheFront =1;
+				break;
+			case GLFW_KEY_BACKSPACE : 
+				menu =false;
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
 	}
 }
 
+
+void output(int x, int y, float r, float g, float b, void * font, char *string)
+{
+  glColor3f( r, g, b );
+  glRasterPos2f(x, y);
+  int len, i;
+  len = (int)strlen(string);
+  for (i = 0; i < len; i++) {
+    glutBitmapCharacter(font, string[i]);
+  }
+}
 
 
 
@@ -156,6 +179,7 @@ int main(int argc, char** argv)
 	srand(time(NULL));
 	/* GLFW initialisation */
 	GLFWwindow* window;
+	glutInit(&argc,argv);
 	if (!glfwInit()) return -1;
 
 	/* Callback to a function if an error is rised by GLFW */
@@ -207,43 +231,69 @@ int main(int argc, char** argv)
 	glTexCoord3f(width,height,0);
 	
 	int distanceObstacle=0;
+	int countLife = 3;
+
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
 		/* Get time (in second) at loop beginning */
 		double startTime = glfwGetTime();
 		/* Cleaning buffers and setting Matrix Mode */
-		glClearColor(0.5,0.5,0.5,0.5);
-		//glClearColor(0.,0.,0.,0.);
-		drawSceneLight(); // No ball for the light
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		setCamera();
-		drawRacket(10,10);
+		if(menu == true){
+			glClearColor(0.5,0.5,0.5,0.5);
+			drawSceneLight();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glLoadIdentity();
+			setCamera();
+
+			glPushMatrix();
+			glRotatef(90,0,0,1);
+			glTranslatef(-5,-5,0);
+			drawWall(10,10,texture);
+			glPopMatrix();
+			glPushMatrix();
+			const char * text="THE LIGHT CORRIDOR";
+			char buffer[20];
+			strcpy(buffer,text);
+			glTranslatef(2,-8,7);
+			output(5,7,1,1,1,GLUT_BITMAP_TIMES_ROMAN_24,buffer);
+			glPopMatrix();
+		}
+		else if(game == true){
+			
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			for(int i = 0;i < countLife ;i++){
+				drawSphereLife(i);
+			}
+			
+			drawSceneLight(); // No ball for the light
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			setCamera();
+			drawRacket(10,10);
 
 
 
-		/* Bouncing*/
+			/* Bouncing*/
 			if(toTheDown ==1){
-				ballVertical+=0.5;
+				ballVertical+=0.25;
 			}
 			else if(toTheDown ==2){
-				ballVertical-=0.5;
+				ballVertical-=0.25;
 			}
 
 			if(toTheFront == 1){
-				ballFront-=0.5;
+				ballFront-=0.25;
 			}
 			else if( toTheFront == 2){
-				ballFront+=0.5;
+				ballFront+=0.25;
 			}
 
 			if(toTheLeft ==1){
-				ballHorizontal+=0.5;
+				ballHorizontal+=0.25;
 			}
 			else if(toTheLeft == 2) {
-				ballHorizontal-=0.5;
+				ballHorizontal-=0.25;
 			}
 			if(toTheFront == 0){
 				ballHorizontal= vertical;
@@ -272,22 +322,53 @@ int main(int argc, char** argv)
 			if(ballVertical>=horizontal+3|| ballVertical<=horizontal-3 || ballHorizontal>=vertical+3 ||ballHorizontal<=vertical-3){
 				if( toTheFront!=0 && ballVertical>=horizontal+3 && ballFront >= 2 -posCamera){
 					printf("lose");
+					toTheDown = 0;
+					toTheFront = 0;
+					toTheLeft = 0;
+					ballFront =2 -posCamera;
+					ballHorizontal = 0;
+					ballVertical =0;
+					countLife--;
 					//return 0;
 				}
 				if( toTheFront!=0 && ballVertical<=horizontal-3 && ballFront >= 2 -posCamera){
 					printf("lose");
-					//return 0;
+					toTheDown = 0;
+					toTheFront = 0;
+					toTheLeft = 0;
+					ballFront =2 -posCamera;
+					ballHorizontal = 0;
+					ballVertical =0;
+					countLife--;
 				}
 				if( toTheFront!=0 && ballHorizontal>=vertical+3 && ballFront >= 2 -posCamera){
 					printf("lose");
-					//return 0;
+					toTheDown = 0;
+					toTheFront = 0;
+					toTheLeft = 0;
+					ballFront =2 -posCamera;
+					ballHorizontal = 0;
+					ballVertical =0;
+					countLife--;
 				}
 				if( toTheFront!=0 && ballHorizontal<=vertical-3 && ballFront >= 2 -posCamera){
 					printf("lose");
-					//return 0;
+					toTheDown = 0;
+					toTheFront = 0;
+					toTheLeft = 0;
+					ballFront =2 -posCamera;
+					ballHorizontal = 0;
+					ballVertical =0;
+					countLife--;
+				}
+
+				if(countLife<= 0){
+					printf("Partie Terminée");
+					game = false;
 				}
 			}
 			else{
+				/*variations bounce racket*/
 				if(ballFront>=2-posCamera && ballVertical>= horizontal+1){
 					toTheDown = 1;
 				}
@@ -301,14 +382,11 @@ int main(int argc, char** argv)
 					toTheLeft = 2;
 				}
 			}
-		/*variations bounce racket*/
+			
+
 			
 		/*Collision wall and ball*/
 			if(ballFront == obstacle[distanceObstacle].x){
-				// printf("mur %f",obstacle[distanceObstacle].x);
-				// printf("\nobstacles\n%d et %f et %f\n",distanceObstacle,obstacle[distanceObstacle].z/2.0 ,obstacle[distanceObstacle].y/2.0);
-				// printf("%f, %f\n",ballHorizontal,ballVertical);
-				
 				if(obstacle[distanceObstacle].z ==-20 || obstacle[distanceObstacle].y ==-20){
 					distanceObstacle++;
 				}
@@ -354,29 +432,59 @@ int main(int argc, char** argv)
 						}
 					}
 					else{
-					 	distanceObstacle++;
+						distanceObstacle++;
 					}
 				}
 				
 			}
-		glPushMatrix();
-		glTranslatef(ballFront,ballVertical,ballHorizontal);
-		drawSphereOn();
-		glPopMatrix();
-		/* Initial scenery setup */
-		glPushMatrix();
-		glTranslatef(0.0,0.0,-0.01);
-		glScalef(10.0,10.0,1.0);
-		glColor3f(0.0,0.0,0.1);
-		//drawSquare();
-		glBegin(GL_POINTS);
-			glColor3f(1.0,1.0,0.0);
-			glVertex3f(0.0,0.0,0.0);
-		glEnd();
-		
-		glPopMatrix();
-		drawCorridor(10,10,texture);
-		drawSceneLight(); //ball for the light
+			/*win scenario*/
+			if(ballFront < -100){
+				game=false;
+				win = true;
+			}
+			glPushMatrix();
+			glTranslatef(ballFront,ballVertical,ballHorizontal);
+			drawSphereOn();
+			glPopMatrix();
+			/* Initial scenery setup */
+			glPushMatrix();
+			glTranslatef(0.0,0.0,-0.01);
+			glScalef(10.0,10.0,1.0);
+			glColor3f(0.0,0.0,0.1);
+			//drawSquare();
+			glBegin(GL_POINTS);
+				glColor3f(1.0,1.0,0.0);
+				glVertex3f(0.0,0.0,0.0);
+			glEnd();
+			
+			glPopMatrix();
+			drawCorridor(10,10,texture);
+			drawSceneLight(); //ball for the light
+		}
+		if(game ==false && menu==false){
+			const char * text ="GAME OVER";
+			posCamera=1.0;
+			glClearColor(0.5,0.5,0.5,0.5);
+			drawSceneLight();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glLoadIdentity();
+			setCamera();
+
+			glPushMatrix();
+			glRotatef(90,0,0,1);
+			glTranslatef(-5,-5,0);
+			drawWall(10,10,texture);
+			glPopMatrix();
+			glPushMatrix();
+			if(win == true){
+				text =" YOU WIN ";
+			}
+			char buffer[20];
+			strcpy(buffer,text);
+			glTranslatef(2,-7.5,5);
+			output(5,7,1,0.5,0.5,GLUT_BITMAP_TIMES_ROMAN_24,buffer);
+			glPopMatrix();
+		}
 		/* Swap front and back buffers */
 		glfwSwapBuffers(window);
 

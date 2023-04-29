@@ -5,7 +5,7 @@ FLAGS = -Wall -O3
 # INCLUDES
 INC = -I./ -Iinclude/
 # INCLUDES
-LIBS = -lglfw -lGLU -lGL -lm
+LIBS = -lglfw -lGLU -lGL -lm -lglut
 # -lopengl32 -lsfml-system -lsfml-graphics -lsfml-window -lglu32 -lglew32 -lglfw3
 # INCLUDES
 LIBDIR = -Llib/ 

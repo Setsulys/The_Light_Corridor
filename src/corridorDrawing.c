@@ -61,4 +61,9 @@ void drawCorridor(int value,int size,GLuint texture){
 		glPopMatrix();
 		
 	}
+	glPushMatrix();
+	glRotatef(90,0,0,1);
+	glTranslatef(-5,(value-1)*size,0);
+	drawWall(10,10,texture);
+	glPopMatrix();
 }

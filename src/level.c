@@ -12,8 +12,8 @@ void drawObstacle(){
 
 void drawLevel(int rand,float size){
     Mur mur;
-    switch(rand){
-        case 1 : 
+    switch(rand%5){
+        case 3 : 
             glPushMatrix();
             glTranslatef(0,0,-6);
             mur.x =-rand*size;
@@ -23,7 +23,7 @@ void drawLevel(int rand,float size){
             drawObstacle();
             glPopMatrix();
             break;
-        case 2 : 
+        case 4 : 
             glPushMatrix();
             glTranslatef(0,0,6);
             mur.x =-rand*size;
@@ -33,7 +33,7 @@ void drawLevel(int rand,float size){
             drawObstacle();
             glPopMatrix();
             break;
-        case 3 : 
+        case 1 : 
             glPushMatrix();
             glTranslatef(0,-6,0);
             mur.x =-rand*size;
@@ -43,7 +43,7 @@ void drawLevel(int rand,float size){
             drawObstacle();
             glPopMatrix();
             break;
-        case 4 : 
+        case 2 : 
             glPushMatrix();
             glTranslatef(0,6,0);
             mur.x =-rand*size;
@@ -55,6 +55,10 @@ void drawLevel(int rand,float size){
             break;
 
         default:
+            mur.x =-rand*size;
+            mur.y = -20;
+            mur.z =-20;
+            obstacle[rand] = mur;
             break;
     }
 }

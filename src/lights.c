@@ -12,7 +12,7 @@ void glDrawLight(float size) {
 
 void drawSceneLight(){
     // LIGHT POSITION
-    float position[4] = {40.0,0.0,5.0,up};
+    float position[4] = {20.0,0.0,5.0,up};
     /*
         * position[0] = axe camera
         * position[1] = horizontal
@@ -27,9 +27,8 @@ void drawSceneLight(){
 
     GLfloat view[16]; 
     glGetFloatv(GL_MODELVIEW_MATRIX, view); 
-    //glUniformMatrix4fv(glGetUniformLocation(my_shader->getGLId(),"view_matrix"),1,GL_FALSE,view);
 
-    float overall_intensity = 3000.0;
+    float overall_intensity = 700.0;
     float black[4] = {0.0,0.0,0.0,1.0};
     float spec_intensity[4] = {overall_intensity,0.0,0.0,0.0};
     float intensite[4] = {overall_intensity,overall_intensity,overall_intensity,overall_intensity};
@@ -62,7 +61,6 @@ void drawSceneLightIntense(){
 
     GLfloat view[16]; 
     glGetFloatv(GL_MODELVIEW_MATRIX, view); 
-    //glUniformMatrix4fv(glGetUniformLocation(my_shader->getGLId(),"view_matrix"),1,GL_FALSE,view);
 
     float overall_intensity = 1500.0;
     float black[4] = {0.0,0.0,0.0,1.0};

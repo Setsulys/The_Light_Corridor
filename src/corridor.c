@@ -181,7 +181,7 @@ int main(int argc, char** argv)
 
 
 
-	// //Stating TExture
+	// // // //Stating TExture
 	// int width, height, n;
 	// //stbi_set_flip_vertically_on_load(true);
 	// unsigned char * data = stbi_load("/home/setsuly/Documents/Synthese/project/the_light_corridor/src/silver.png",&width,&height,&n,0);
@@ -193,17 +193,21 @@ int main(int argc, char** argv)
 	// GLuint texture;
 	// glGenTextures(1,&texture);
 	// //glActiveTexture(GL_TEXTURE0);
-	// glBindTexture(GL_TEXTURE_3D,texture);
-	// glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
-	// glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	// glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_S,GL_REPEAT);
-	// glTexParameteri(GL_TEXTURE_3D,GL_TEXTURE_WRAP_T,GL_REPEAT);
-	// glTexImage3D(GL_TEXTURE_3D,0,GL_RGBA,width,height,0,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+	// glBindTexture(GL_TEXTURE_2D,texture);
+	// glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	// glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	// glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	// glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	// glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 	// //stbi_image_free(data);
-	// glBindTexture(GL_TEXTURE_3D,0);
+	// glBindTexture(GL_TEXTURE_2D,0);
 	// glTexCoord3f(width,height,0);
-	
+
+
+
+
+	int distanceObstacle=0;
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -212,7 +216,7 @@ int main(int argc, char** argv)
 		/* Cleaning buffers and setting Matrix Mode */
 		glClearColor(0.5,0.5,0.5,0.5);
 		//glClearColor(0.,0.,0.,0.);
-		//drawSceneLight(); // No ball for the light
+		drawSceneLight(); // No ball for the light
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//drawFrame();
 		glMatrixMode(GL_MODELVIEW);
@@ -243,6 +247,10 @@ int main(int argc, char** argv)
 			else if(toTheLeft == 2) {
 				ballHorizontal--;
 			}
+			if(toTheFront == 0){
+				ballHorizontal= vertical;
+				ballVertical= horizontal;
+			}
 
 
 			if(ballFront==2 && toTheFront!=0){
@@ -260,19 +268,67 @@ int main(int argc, char** argv)
 			if(ballVertical >=4){
 				toTheDown =2;
 			}
-			if(ballFront == obstacle[1].x){
-				if(toTheFront == 1){
-					toTheFront =2;
+
+
+
+		/*Collision wall and ball*/
+			if(ballFront == obstacle[distanceObstacle].x){
+				printf("mur %f",obstacle[distanceObstacle].x);
+				printf("\nobstacles\n%d et %f et %f\n",distanceObstacle,obstacle[distanceObstacle].z/2.0 ,obstacle[distanceObstacle].y/2.0);
+				printf("%f, %f\n",ballHorizontal,ballVertical);
+				
+				if(obstacle[distanceObstacle].z ==-20 || obstacle[distanceObstacle].y ==-20){
+					distanceObstacle++;
 				}
 				else{
-					toTheFront =1;
+					if(obstacle[distanceObstacle].z < 0 && ballHorizontal <= (obstacle[distanceObstacle].z/2) +3){
+						if(toTheFront == 1){
+							toTheFront =2;
+							distanceObstacle--;
+						}
+						else{
+							toTheFront =1;
+						
+						}
+					}
+					if(obstacle[distanceObstacle].z > 0 && ballHorizontal >= (obstacle[distanceObstacle].z/2) -3){
+						if(toTheFront == 1){
+							toTheFront =2;
+							distanceObstacle--;
+						}
+						else{
+							toTheFront =1;
+						
+						}
+					}
+					if(obstacle[distanceObstacle].y < 0 && ballVertical <= (obstacle[distanceObstacle].y/2) +3){
+						if(toTheFront == 1){
+							toTheFront =2;
+							distanceObstacle--;
+						}
+						else{
+							toTheFront =1;
+						
+						}
+					}
+					if(obstacle[distanceObstacle].y > 0 && ballVertical >= (obstacle[distanceObstacle].y/2) -3){
+						if(toTheFront == 1){
+							toTheFront =2;
+							distanceObstacle--;
+						}
+						else{
+							toTheFront =1;
+						
+						}
+					}
+					else{
+					 	distanceObstacle++;
+					}
 				}
+				
 			}
-			//printf("%f",obstacle[1].x);
-
-
 		glPushMatrix();
-		glTranslatef(ballFront,ballVertical+horizontal,ballHorizontal+vertical);
+		glTranslatef(ballFront,ballVertical,ballHorizontal);
 		drawSphereOn();
 		glPopMatrix();
 		/* Initial scenery setup */

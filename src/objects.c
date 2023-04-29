@@ -1,6 +1,7 @@
 #include "../includes/objects.h"
 #include "../includes/3D_tools.h"
 #include "../includes/lights.h"
+
 float vertical = 0;
 float horizontal = 0;
 

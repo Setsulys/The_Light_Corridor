@@ -1,15 +1,4 @@
-#define GLFW_INCLUDE_NONE
-#include <GLFW/glfw3.h>
-#include <GL/gl.h>
-#include <GL/glu.h>
-#include <GL/glut.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdbool.h>
-#include <time.h>
+#include "../includes/corridor.h"
 
 #include "../includes/3D_tools.h"
 #include "../includes/draw_scene.h"
@@ -17,6 +6,7 @@
 #include "../includes/level.h"
 #include "../includes/lights.h"
 #include "../includes/objects.h"
+#include "../includes/music.h"
 #define STB_IMAGE_IMPLEMENTATION
 #include "../includes/stb_image.h"
 
@@ -205,9 +195,8 @@ int main(int argc, char** argv)
 	glPointSize(5.0);
 	glEnable(GL_DEPTH_TEST);
 
-
-
-
+	Mix_Music * music = init_audio();
+	
 	// // // //Stating TExture
 	int width, height, n;
 	//stbi_set_flip_vertically_on_load(true);
@@ -233,6 +222,8 @@ int main(int argc, char** argv)
 	int distanceObstacle=0;
 	int countLife = 3;
 
+	Mix_PlayMusic(music,-1);
+	
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -501,6 +492,7 @@ int main(int argc, char** argv)
 
 		/* Animate scenery */
 	}
+	free_audio(music);
 	glDeleteTextures(1, &texture);
 	glfwTerminate();
 	return 0;

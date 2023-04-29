@@ -5,8 +5,7 @@ FLAGS = -Wall -O3
 # INCLUDES
 INC = -I./ -Iinclude/
 # INCLUDES
-LIBS = -lglfw -lGLU -lGL -lm -lglut
-# -lopengl32 -lsfml-system -lsfml-graphics -lsfml-window -lglu32 -lglew32 -lglfw3
+LIBS = -lglfw -lGLU -lGL -lm -lglut -lSDL2 -lSDL2_mixer
 # INCLUDES
 LIBDIR = -Llib/ 
 # Compilateur
@@ -17,7 +16,7 @@ INCDIR = includes/
 SRCDIR = src/
 
 # $(OBJECTS) sont les objets qui seront générés après la compilation
-OBJECTS =  obj/draw_scene.o obj/3D_tools.o obj/corridor.o obj/corridorDrawing.o obj/level.o obj/lights.o obj/objects.o #obj/textures.o
+OBJECTS =  obj/draw_scene.o obj/3D_tools.o obj/corridor.o obj/corridorDrawing.o obj/level.o obj/lights.o obj/objects.o obj/music.o
 
 
 

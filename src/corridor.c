@@ -231,6 +231,7 @@ int main(int argc, char** argv)
 		double startTime = glfwGetTime();
 		/* Cleaning buffers and setting Matrix Mode */
 		if(menu == true){
+			//menu
 			glClearColor(0.5,0.5,0.5,0.5);
 			drawSceneLight();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -251,7 +252,7 @@ int main(int argc, char** argv)
 			glPopMatrix();
 		}
 		else if(game == true){
-			
+			//Game start
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			for(int i = 0;i < countLife ;i++){
 				drawSphereLife(i);
@@ -430,6 +431,7 @@ int main(int argc, char** argv)
 			}
 			/*win scenario*/
 			if(ballFront < -100){
+				
 				game=false;
 				win = true;
 			}
@@ -453,6 +455,7 @@ int main(int argc, char** argv)
 			drawSceneLight(); //ball for the light
 		}
 		if(game ==false && menu==false){
+			/*End of the game*/
 			const char * text ="GAME OVER";
 			posCamera=1.0;
 			glClearColor(0.5,0.5,0.5,0.5);

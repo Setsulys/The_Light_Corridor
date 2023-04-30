@@ -64,18 +64,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			case GLFW_KEY_ESCAPE :
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
-			// case GLFW_KEY_L :
-			// 	glPolygonMode(GL_FRONT_AND_BACK,GL_LINE);
-			// 	break;
-			// case GLFW_KEY_P :
-			// 	glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-			// 	break;
-			// case GLFW_KEY_R :
-			// 	flag_animate_rot_arm = 1-flag_animate_rot_arm;
-			// 	break;
-			// case GLFW_KEY_T :
-			// 	flag_animate_rot_scale = 1-flag_animate_rot_scale;
-			// 	break;
+/////////////////////////Cas de débuggage				
 			// case GLFW_KEY_KP_9 :
 			// 	if(dist_zoom<100.0f) dist_zoom*=1.1;
 			// 	printf("Zoom is %f\n",dist_zoom);
@@ -84,55 +73,55 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			// 	if(dist_zoom>1.0f) dist_zoom*=0.9;
 			// 	printf("Zoom is %f\n",dist_zoom);
 			// 	break;
-			// case GLFW_KEY_UP :
+			// case GLFW_KEY_KP_8 :
 			// 	if (phy>2) phy -= 2;
 			// 	printf("Phy %f\n",phy);
 			// 	break;
-			// case GLFW_KEY_DOWN :
+			// case GLFW_KEY_KP_5 :
 			// 	if (phy<=88.) phy += 2;
 			// 	printf("Phy %f\n",phy);
 			// 	break;
-			// case GLFW_KEY_LEFT :
+			// case GLFW_KEY_KP_4 :
 			// 	theta -= 5;
 			// 	break;
-			// case GLFW_KEY_RIGHT :
+			// case GLFW_KEY_KP_6 :
 			// 	theta += 5;
 			// 	break;
-			//changement lumiere
+			////changement lumiere
 			// case GLFW_KEY_P :
 			// 	up+=0.5;
 			// 	break;
 			// case GLFW_KEY_M :
 			// 	up-=0.5;
 			// 	break;
-
+////////////////////////////////
 			//mouvement de raquette	
-			case GLFW_KEY_KP_8 :
+			case GLFW_KEY_UP  :
 				if(vertical < 3){
 					vertical += 0.5;
 				}
 				break;
-			case GLFW_KEY_KP_4 :
+			case GLFW_KEY_LEFT :
 				if(horizontal > -3){
 					horizontal -= 0.5;
 				}
 				break;
-			case GLFW_KEY_KP_5 :
+			case  GLFW_KEY_DOWN:
 				if(vertical > -3){
 					vertical -= 0.5;
 				}
 				break;
-			case GLFW_KEY_KP_6 :
+			case GLFW_KEY_RIGHT :
 				if(horizontal < 3  ){
 					horizontal += 0.5;
 				}
 				break;
-			case GLFW_KEY_SPACE :
+			case GLFW_KEY_TAB:
 				if(menu ==false){
 					posCamera+=10;
 				}
 				break;
-			case GLFW_KEY_LEFT_CONTROL:
+			case GLFW_KEY_LEFT_SHIFT:
 				if(menu == false){
 					if(posCamera >=2){
 						posCamera-=10;
@@ -140,10 +129,11 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				}
 				break;
 			case GLFW_KEY_ENTER : 
-				toTheFront =1;
-				break;
-			case GLFW_KEY_BACKSPACE : 
-				menu =false;
+				if(menu == true){
+					menu =false;
+				}else{
+					toTheFront =1;
+				}
 				break;
 			default: fprintf(stdout,"Touche non gérée (%d)\n",key);
 		}
@@ -258,7 +248,6 @@ int main(int argc, char** argv)
 				drawSphereLife(i);
 			}
 			
-			drawSceneLight(); // No ball for the light
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 			setCamera();
@@ -452,7 +441,10 @@ int main(int argc, char** argv)
 			
 			glPopMatrix();
 			drawCorridor(10,10,texture);
+			glPushMatrix();
+			glTranslatef(-posCamera,0,0);
 			drawSceneLight(); //ball for the light
+			glPopMatrix();
 		}
 		if(game ==false && menu==false){
 			/*End of the game*/

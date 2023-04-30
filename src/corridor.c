@@ -87,7 +87,7 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 			// case GLFW_KEY_KP_6 :
 			// 	theta += 5;
 			// 	break;
-			////changement lumiere
+			// //changement lumiere
 			// case GLFW_KEY_P :
 			// 	up+=0.5;
 			// 	break;
@@ -140,6 +140,30 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 	}
 }
 
+void mouse_button_callback(GLFWwindow* window, int button,int action,int mods){
+	double x;
+	double y;
+
+	if(button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS){
+		glfwGetCursorPos(window,&x,&y);
+		if(x >=  410 && x <= 560 && y >=449 && y <=537){
+			if(menu==true){
+				menu = false;
+			}
+		}
+		if(x >=  410 && x <= 560 && y >=562 && y <=661){
+			if(menu == true){
+				glfwSetWindowShouldClose(window, GLFW_TRUE);
+			}
+		}
+		if(x >=  410 && x <= 560 && y >=600 && y <=690){
+			if(menu == false && game == false){
+				glfwSetWindowShouldClose(window, GLFW_TRUE);
+			}
+		}
+	}
+}
+
 
 void output(int x, int y, float r, float g, float b, void * font, char *string)
 {
@@ -152,6 +176,14 @@ void output(int x, int y, float r, float g, float b, void * font, char *string)
   }
 }
 
+
+void button(){
+	glPushMatrix();
+	glRotatef(90,0,1,0);
+	glTranslatef(2,7.75,4);
+	drawSquare();
+	glPopMatrix();
+}
 
 
 int main(int argc, char** argv)
@@ -179,6 +211,9 @@ int main(int argc, char** argv)
 
 	glfwSetWindowSizeCallback(window,onWindowResized);
 	glfwSetKeyCallback(window, onKey);
+
+	/*Mouse*/
+	glfwSetMouseButtonCallback(window,mouse_button_callback);
 
 	onWindowResized(window,WINDOW_WIDTH,WINDOW_HEIGHT);
 
@@ -239,6 +274,22 @@ int main(int argc, char** argv)
 			strcpy(buffer,text);
 			glTranslatef(2,-8,7);
 			output(5,7,1,1,1,GLUT_BITMAP_TIMES_ROMAN_24,buffer);
+
+			//Buttons
+			glPushMatrix();
+			text = "JOUER";
+			strcpy(buffer,text);
+			glTranslatef(0,0.60,-1.85);
+			output(5,7,1,1,1,GLUT_BITMAP_TIMES_ROMAN_24,buffer);
+			glTranslatef(0,0,-0.85);
+			text = "QUITTER";
+			strcpy(buffer,text);
+			output(5,7,1,1,1,GLUT_BITMAP_TIMES_ROMAN_24,buffer);
+			glPopMatrix();
+			button();
+			glTranslatef(0,0,-1);
+			button();
+
 			glPopMatrix();
 		}
 		else if(game == true){
@@ -418,6 +469,12 @@ int main(int argc, char** argv)
 				}
 				
 			}
+
+
+			/*Take bonus*/
+			//if(ballFront+1 >= bonus[distanceBonus].x && ballFront-1 <= bonus[distanceBonus].x
+			// && ballVertical+1 >= bonus[distanceBonus].y && ballVertical <= bonus[distanceBonus].y)
+			// && ballHorizontal+1 >= bonus[distanceBonus].z && ballhorizontal <= bonus[distanceBonus].z)
 			/*win scenario*/
 			if(ballFront < -100){
 				
@@ -467,8 +524,16 @@ int main(int argc, char** argv)
 			}
 			char buffer[20];
 			strcpy(buffer,text);
-			glTranslatef(2,-7.5,5);
+			glTranslatef(2,-7.60,5);
 			output(5,7,1,0.5,0.5,GLUT_BITMAP_TIMES_ROMAN_24,buffer);
+
+			
+			glTranslatef(0,0.1,-1);
+			text = "QUITTER";
+			strcpy(buffer,text);
+			output(5,7,1,1,1,GLUT_BITMAP_TIMES_ROMAN_24,buffer);
+			glTranslatef(0,-0.5,1.75);
+			button();
 			glPopMatrix();
 		}
 		/* Swap front and back buffers */

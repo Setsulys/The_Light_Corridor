@@ -9,8 +9,8 @@ Mix_Music* init_audio(){
 		printf("Erreur lors de l'initialisaiton de SDL_Mixer: %s",Mix_GetError());
 		return NULL;
 	}
-	Mix_Music * music = Mix_LoadMUS("sound/Piano.mp3");
-    //Mix_Music * music = Mix_LoadMUS("sound/traveller.mp3");
+	Mix_Music * music = Mix_LoadMUS("sound/Piano.mp3"); // Thomas bergersen Empire of angel
+    //Mix_Music * music = Mix_LoadMUS("sound/traveller.mp3"); //by RayLife (un ami)
 	if(!music){
 		printf("Erreur lors du chargement de la musique: %s",Mix_GetError());
 		return NULL;

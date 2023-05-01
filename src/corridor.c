@@ -65,35 +65,35 @@ void onKey(GLFWwindow* window, int key, int scancode, int action, int mods)
 				glfwSetWindowShouldClose(window, GLFW_TRUE);
 				break;
 /////////////////////////Cas de débuggage				
-			// case GLFW_KEY_KP_9 :
-			// 	if(dist_zoom<100.0f) dist_zoom*=1.1;
-			// 	printf("Zoom is %f\n",dist_zoom);
-			// 	break;
-			// case GLFW_KEY_KP_3 :
-			// 	if(dist_zoom>1.0f) dist_zoom*=0.9;
-			// 	printf("Zoom is %f\n",dist_zoom);
-			// 	break;
-			// case GLFW_KEY_KP_8 :
-			// 	if (phy>2) phy -= 2;
-			// 	printf("Phy %f\n",phy);
-			// 	break;
-			// case GLFW_KEY_KP_5 :
-			// 	if (phy<=88.) phy += 2;
-			// 	printf("Phy %f\n",phy);
-			// 	break;
-			// case GLFW_KEY_KP_4 :
-			// 	theta -= 5;
-			// 	break;
-			// case GLFW_KEY_KP_6 :
-			// 	theta += 5;
-			// 	break;
-			// //changement lumiere
-			// case GLFW_KEY_P :
-			// 	up+=0.5;
-			// 	break;
-			// case GLFW_KEY_M :
-			// 	up-=0.5;
-			// 	break;
+			case GLFW_KEY_KP_9 :
+				if(dist_zoom<100.0f) dist_zoom*=1.1;
+				printf("Zoom is %f\n",dist_zoom);
+				break;
+			case GLFW_KEY_KP_3 :
+				if(dist_zoom>1.0f) dist_zoom*=0.9;
+				printf("Zoom is %f\n",dist_zoom);
+				break;
+			case GLFW_KEY_KP_8 :
+				if (phy>2) phy -= 2;
+				printf("Phy %f\n",phy);
+				break;
+			case GLFW_KEY_KP_5 :
+				if (phy<=88.) phy += 2;
+				printf("Phy %f\n",phy);
+				break;
+			case GLFW_KEY_KP_4 :
+				theta -= 5;
+				break;
+			case GLFW_KEY_KP_6 :
+				theta += 5;
+				break;
+			//changement lumiere
+			case GLFW_KEY_P :
+				up+=0.5;
+				break;
+			case GLFW_KEY_M :
+				up-=0.5;
+				break;
 ////////////////////////////////
 			//mouvement de raquette	
 			case GLFW_KEY_UP  :
@@ -241,8 +241,23 @@ int main(int argc, char** argv)
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 	stbi_image_free(data);
-	glBindTexture(GL_TEXTURE_2D,0);
-	glTexCoord3f(width,height,0);
+
+	data = stbi_load("imgs/heart.png",&width,&height,&n,0);
+	if(!data){
+		printf("error picture not loaded\n");
+		return 1;
+	}
+	GLuint textureHeart;
+	glGenTextures(1,&textureHeart);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,textureHeart);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+
+	stbi_image_free(data);
 	
 	int distanceObstacle=0;
 	int countLife = 3;
@@ -495,8 +510,12 @@ int main(int argc, char** argv)
 				glColor3f(1.0,1.0,0.0);
 				glVertex3f(0.0,0.0,0.0);
 			glEnd();
-			
+
 			glPopMatrix();
+
+			//DRAW BONUS
+			drawBonusHeartPosition(textureHeart);
+			
 			drawCorridor(10,10,texture);
 			glPushMatrix();
 			glTranslatef(-posCamera,0,0);
@@ -516,7 +535,7 @@ int main(int argc, char** argv)
 			glPushMatrix();
 			glRotatef(90,0,0,1);
 			glTranslatef(-5,-5,0);
-			drawWall(10,10,texture);
+			drawWall(10,10,textureHeart);
 			glPopMatrix();
 			glPushMatrix();
 			if(win == true){
@@ -554,6 +573,7 @@ int main(int argc, char** argv)
 	}
 	free_audio(music);
 	glDeleteTextures(1, &texture);
+	//glDeleteTextures(1, &textureHeart);
 	glfwTerminate();
 	return 0;
 }

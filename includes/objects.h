@@ -13,9 +13,24 @@
 extern float vertical;
 extern float horizontal;
 
+typedef struct{
+    float x;
+    float y;
+    float z;
+    int type;
+} Bonus;
+
+extern Bonus bonu[50];
+
 void drawSphereOn();
 
 void drawRacket(int width, int height);
 
 void drawSphereLife(float value);
+
+void drawCube(GLuint texture);
+
+void drawBonusHeart(GLuint texture);
+
+void drawBonusHeartPosition(GLuint texture);
 #endif

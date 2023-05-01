@@ -5,7 +5,7 @@
 float vertical = 0;
 float horizontal = 0;
 
-
+Bonus bonu[50];
 
 void drawSphereOn(){
 	float alpha = 0;
@@ -47,4 +47,115 @@ void drawSphereLife(float value){
 	gluSphere(gluNewQuadric(),0.2,NB_SEG_CIRCLE,NB_SEG_CIRCLE);
 	//drawSceneLightIntense();
 	glPopMatrix();
+}
+
+void drawCube(GLuint texture){
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D,texture);
+    glBegin(GL_POLYGON);
+
+    //face in xy plane 
+    glTexCoord2f(0,0);
+	glVertex3f(0, 0 ,0 );
+	glTexCoord2f(0,1);
+    glVertex3f(0.5, 0, 0);
+	glTexCoord2f(1,1);
+    glVertex3f(0.5, 0.5, 0);
+	glTexCoord2f(1,0);
+    glVertex3f(0, 0.5, 0);
+
+    //face in yz plane
+	glTexCoord2f(0,0);
+    glVertex3f(0, 0, 0);
+	glTexCoord2f(0,1);
+    glVertex3f(0, 0, 0.5);
+	glTexCoord2f(1,1);
+    glVertex3f(0, 0.5, 0);
+	glTexCoord2f(1,0);
+    glVertex3f(0, 0.5, 0.5);
+
+    //face in zx plance
+	glTexCoord2f(0,0);
+    glVertex3f(0, 0, 0);
+	glTexCoord2f(0,1);
+    glVertex3f(0, 0, 0.5);
+	glTexCoord2f(1,1);
+    glVertex3f(0.5, 0, 0.5);
+	glTexCoord2f(1,0);
+    glVertex3f(0.5, 0, 0);
+
+    //|| to xy plane.
+	glTexCoord2f(0,0);
+    glVertex3f(0, 0, 0.5);
+	glTexCoord2f(0,1);
+    glVertex3f(0.5, 0, 0.5);
+	glTexCoord2f(1,1);
+    glVertex3f(0.5, 0.5, 0.5);
+	glTexCoord2f(1,0);
+    glVertex3f(0, 0.5, 0.5);
+
+    //|| to yz plane
+	glTexCoord2f(0,0);
+    glVertex3f(0, 0, 0.5);
+	glTexCoord2f(0,1);
+    glVertex3f(0.5, 0, 0.5);
+	glTexCoord2f(1,1);
+    glVertex3f(0.5, 0.5, 0.5);
+	glTexCoord2f(1,0);
+    glVertex3f(0, 0.5, 0.5);
+
+    //|| to zx plane
+	glTexCoord2f(0,0);
+    glVertex3f(0, 0.5, 0);
+	glTexCoord2f(0,1);
+    glVertex3f(0, 0.5, 0.5);
+	glTexCoord2f(1,1);
+    glVertex3f(0.5, 0.5, 0.5);
+	glTexCoord2f(1,0);
+    glVertex3f(0.5, 0.5, 0);
+
+    glEnd();
+	glBindTexture(GL_TEXTURE_2D,0);
+	glDisable(GL_TEXTURE_2D);
+}
+
+
+void drawBonusHeart(GLuint texture){
+	glPushMatrix();
+	glTranslatef(-2,0,4);
+    drawCube(texture);
+	glPopMatrix();
+}
+
+void drawBonusHeartPosition(GLuint texture){
+	Bonus bon;
+	glPushMatrix();
+	glTranslatef(-8,1,0);
+	glRotatef(90,0,1,0);
+	bon.type =1;
+	bon.x = ;
+	bon.y = ;
+	bon.z = ;
+	bonu[0] = bon;
+	drawBonusHeart(texture);
+	glPopMatrix();
+}
+
+void drawStickBonus(){
+	glBegin(GL_TRIANGLES);
+
+	glColor3f(1.0,0.0,0.0); 
+	glVertex3f( 0.0, 1.0, 0.0); 
+	glVertex3f(-1.0,-1.0, 1.0); 
+	glVertex3f( 1.0,-1.0, 1.0);
+
+	glVertex3f( 0.0, 1.0, 0.0f);
+	glVertex3f( 1.0,-1.0, -1.0); 
+	glVertex3f(-1.0,-1.0, -1.0);
+
+	glVertex3f( 0.0, 1.0, 0.0); 
+	glVertex3f(-1.0,-1.0,-1.0);   
+	glVertex3f(-1.0,-1.0, 1.0);   
+  	
+	glEnd();
 }

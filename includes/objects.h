@@ -30,7 +30,9 @@ void drawSphereLife(float value);
 
 void drawCube(GLuint texture);
 
-void drawBonusHeart(GLuint texture);
+void drawBonus(GLuint texture);
 
 void drawBonusHeartPosition(GLuint texture);
+
+void drawBonusStickPosition(GLuint texture);
 #endif

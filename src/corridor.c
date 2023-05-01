@@ -258,9 +258,26 @@ int main(int argc, char** argv)
 	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
 
 	stbi_image_free(data);
+
+	data = stbi_load("imgs/stick.png",&width,&height,&n,0);
+	if(!data){
+		printf("error picture not loaded\n");
+		return 1;
+	}
+	GLuint textureStick;
+	glGenTextures(1,&textureStick);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D,textureStick);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S,GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T,GL_REPEAT);
+	glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,width,height,0,GL_RGBA,GL_UNSIGNED_BYTE,data);
+
+	stbi_image_free(data);
 	
 	int distanceObstacle=0;
-	int countLife = 3;
+	int countLife = 5;
 
 	Mix_PlayMusic(music,-1);
 	
@@ -514,8 +531,11 @@ int main(int argc, char** argv)
 			glPopMatrix();
 
 			//DRAW BONUS
+			glPushMatrix();
 			drawBonusHeartPosition(textureHeart);
-			
+			glTranslatef(0,0,1);
+			drawBonusStickPosition(textureStick);
+			glPopMatrix();
 			drawCorridor(10,10,texture);
 			glPushMatrix();
 			glTranslatef(-posCamera,0,0);
@@ -535,7 +555,7 @@ int main(int argc, char** argv)
 			glPushMatrix();
 			glRotatef(90,0,0,1);
 			glTranslatef(-5,-5,0);
-			drawWall(10,10,textureHeart);
+			drawWall(10,10,texture);
 			glPopMatrix();
 			glPushMatrix();
 			if(win == true){

@@ -120,42 +120,37 @@ void drawCube(GLuint texture){
 }
 
 
-void drawBonusHeart(GLuint texture){
+void drawBonus(GLuint texture){
 	glPushMatrix();
-	glTranslatef(-2,0,4);
     drawCube(texture);
 	glPopMatrix();
 }
 
 void drawBonusHeartPosition(GLuint texture){
-	Bonus bon;
+	//Bonus bon;
 	glPushMatrix();
-	glTranslatef(-8,1,0);
+	glTranslatef(-10,1,4);
 	glRotatef(90,0,1,0);
-	bon.type =1;
-	bon.x = ;
-	bon.y = ;
-	bon.z = ;
-	bonu[0] = bon;
-	drawBonusHeart(texture);
+	// bon.type =1;
+	// bon.x = ;
+	// bon.y = ;
+	// bon.z = ;
+	// bonu[0] = bon;
+	drawBonus(texture);
 	glPopMatrix();
 }
 
-void drawStickBonus(){
-	glBegin(GL_TRIANGLES);
 
-	glColor3f(1.0,0.0,0.0); 
-	glVertex3f( 0.0, 1.0, 0.0); 
-	glVertex3f(-1.0,-1.0, 1.0); 
-	glVertex3f( 1.0,-1.0, 1.0);
-
-	glVertex3f( 0.0, 1.0, 0.0f);
-	glVertex3f( 1.0,-1.0, -1.0); 
-	glVertex3f(-1.0,-1.0, -1.0);
-
-	glVertex3f( 0.0, 1.0, 0.0); 
-	glVertex3f(-1.0,-1.0,-1.0);   
-	glVertex3f(-1.0,-1.0, 1.0);   
-  	
-	glEnd();
+void drawBonusStickPosition(GLuint texture){
+	//Bonus bon;
+	glPushMatrix();
+	glTranslatef(-10,1,4);
+	glRotatef(90,0,1,0);
+	// bon.type =2;
+	// bon.x = ;
+	// bon.y = ;
+	// bon.z = ;
+	// bonu[0] = bon;
+	drawBonus(texture);
+	glPopMatrix();
 }
